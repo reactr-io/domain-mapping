@@ -3,7 +3,7 @@
 Plugin Name: Domain Mapping
 Plugin URI: https://premium.wpmudev.org/project/domain-mapping/
 Description: The ultimate Multisite domain mapping plugin - sync cookies, sell domains with eNom, and integrate with Pro Sites.
-Version: 4.4.3.1
+Version: 4.4.3.1.5
 Author: WPMU DEV
 Author URI: http://premium.wpmudev.org
 WDP ID: 99
@@ -41,6 +41,7 @@ if ( !is_multisite() || class_exists( 'Domainmap_Plugin', false ) ) {
 //load dashboard notice
 global $wpmudev_notices;
 $wpmudev_notices[] = array( 'id'=> 99,'name'=> 'Domain Mapping', 'screens' => array( 'tools_page_domainmapping', 'settings_page_domainmapping_options-network' ) );
+require_once 'extra/wpmudev-dash-notification.php';
 
 // main domain mapping class
 require_once 'inc/DM_Currencies.php';
@@ -226,4 +227,3 @@ function dm_home_url( $path = '', $scheme = null ){
     $current_home_url = home_url( $path, $scheme );
     return domain_map::utils()->unswap_url( $current_home_url, false, (bool) $path );
 }
-

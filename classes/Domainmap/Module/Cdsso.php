@@ -389,7 +389,8 @@ class Domainmap_Module_Cdsso extends Domainmap_Module {
 			$admin_scheme = self::utils()->get_admin_scheme() ? self::utils()->get_admin_scheme() : "http";
 			$url  = trailingslashit( set_url_scheme( network_home_url("/"), $admin_scheme ) );
 		}
-
+//  $url = str_replace("http://","https://", $url);
+    $url = "https://sites.imagely.com/";
 		return $wp_rewrite->using_permalinks() ? $url . self::SSO_ENDPOINT . "/" . time() . "/" : $url . "?" . self::SSO_ENDPOINT . "=" . time() ;
 	}
 

@@ -144,7 +144,7 @@ class Domainmap_Module_Mapping extends Domainmap_Module {
 			$this->_add_filter( 'login_url', 'set_proper_login_redirect_login', 3, 100 );
 			$this->_add_filter( 'logout_url', 'set_proper_login_redirect', 2, 100 );
 			$this->_add_filter( 'admin_url', 'set_proper_login_redirect', 2, 100 );
-			
+
 
 			$this->_add_filter( 'pre_option_siteurl', 'swap_root_url' );
 			$this->_add_filter( 'pre_option_home',    'swap_root_url' );
@@ -162,6 +162,20 @@ class Domainmap_Module_Mapping extends Domainmap_Module {
 		$this->_add_filter( 'customize_allowed_urls', "customizer_allowed_urls" );
 		$this->_add_filter( 'logout_url', "filter_logout_url", 10, 2 );
 
+		add_action('wpmu_new_blog', array($this, 'delete_cache_for_blog'), 10, 2);
+		add_action('domainmapping_added_domain', array($this, 'clear_cache_for_domain' ), 10, 2);
+		add_action('domainmapping_deleted_domain', array($this, 'clear_cache_for_domain'), 10, 2);
+		add_action('deleted_blog', array($this, 'delete_cache_for_blog'), 10, 2);
+	}
+
+	function clear_cache_for_domain($domain, $blog_id) {
+		wp_cache_delete('all', 'mapped_domains');
+		wp_cache_delete($blog_id, 'mapped_domains');
+		wp_cache_delete("{$blog_id}_multiple_allowed", 'mapped_domains');
+	}
+
+	function clear_cache_for_blog($blog_id) {
+		$this->clear_cache_for_domain(NULL, $blog_id);
 	}
 
 	/*
@@ -269,7 +283,7 @@ class Domainmap_Module_Mapping extends Domainmap_Module {
 				/*
 				 * Admin
 				 */
-				$admin_type = $this->_get_current_mapping_type('map_admindomain'); 
+				$admin_type = $this->_get_current_mapping_type('map_admindomain');
 				// If user determines mapping, return that.
 				if ($admin_type === 'user') {
 					$use_mapped = domain_map::utils()->is_mapped_domain();
@@ -279,7 +293,7 @@ class Domainmap_Module_Mapping extends Domainmap_Module {
 				}
 			}
 		}
-	
+
 		// if forced page, check that.
 		if ($is_forced_single_page) {
 			return $is_forced_single_page;
@@ -584,12 +598,17 @@ class Domainmap_Module_Mapping extends Domainmap_Module {
 	 * @return string Mapping type.
 	 */
 	private function _get_current_mapping_type( $option ) {
+		$found      = FALSE;
+		$blog_id    = get_current_blog_id();
+		$cache_key  = "{$blog_id}-{$option}";
+		$mapping    = wp_cache_get($cache_key, 'mapped_domains', FALSE, $found);
+		if ($found === FALSE) {
 		$mapping = $this->_plugin->get_option( $option );
+			wp_cache_set($cache_key, $mapping, 'mapped_domains');
+		}
+
 		if ( $mapping != 'original' && $mapping != 'mapped' ) {
-			$original = $this->_wpdb->get_var( sprintf(
-				"SELECT option_value FROM %s WHERE option_name = 'siteurl'",
-				$this->_wpdb->options
-			) );
+			$original = get_option('siteurl'); // no hooks
 
 			if ( $original ) {
 				$components = self::utils()->parse_mb_url( $original );
@@ -660,7 +679,7 @@ class Domainmap_Module_Mapping extends Domainmap_Module {
 	}
 
 
-	
+
 
 
 
@@ -1261,11 +1280,11 @@ class Domainmap_Module_Mapping extends Domainmap_Module {
 
 	/**
 	 * Login redirect filter
-	 * 
+	 *
 	 * @param $redirect_to
 	 * @param $requested_redirect_to
 	 * @param $force_reauth
-	 * 
+	 *
 	 * @see set_proper_login_redirect
 	 */
 	function set_proper_login_redirect_login( $redirect_to, $requested_redirect_to, $force_reauth ) {
@@ -1292,9 +1311,9 @@ class Domainmap_Module_Mapping extends Domainmap_Module {
 		if( !self::utils()->is_login() || is_main_site() ) return $url;
 
 		$admin_mapping = $this->_plugin->get_option( 'map_admindomain' );
-		
+
 		$scheme = (self::$_force_admin_ssl || is_ssl() ) ? "https" : "http";
-		
+
 		if( $path === "wp-login.php" ){
 
 			if( $admin_mapping  == "mapped" ){
@@ -1420,11 +1439,10 @@ class Domainmap_Module_Mapping extends Domainmap_Module {
 		if ( is_ssl() || $this->_plugin->get_option("map_force_admin_ssl")) {
 			$url_info = parse_url( $url );
 			if( $url_info['scheme'] != 'https' ){
-				$url = str_replace( 'http://', 'https://', $url ); 
+				$url = str_replace( 'http://', 'https://', $url );
 			}
 		}
 		return $url;
 	}
 
 }
-

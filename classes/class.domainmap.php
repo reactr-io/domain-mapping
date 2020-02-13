@@ -160,7 +160,7 @@ class domain_map {
 
 			//Network Admin Notice for WHMCS
 			if ( is_network_admin() ) {
-				
+
 				$this->show_whmcs_warning();
 			}
 		}
@@ -387,8 +387,8 @@ class domain_map {
 	function init_customizer_preview(){
 		add_filter( 'wp_headers', array($this, 'filter_iframe_security_headers' ), 10, 1);
 	}
-	
-	
+
+
 	/**
 	 * Allow the customizer to load the mapped domain if accessed from the main site admin menu
 	 * Only issue is the cross domain script dont work in the customier preview
@@ -400,7 +400,7 @@ class domain_map {
 	function filter_iframe_security_headers( $headers ) {
 		$customize_url 		= admin_url(); //Admin url
 		$current_site_url 	= get_site_url(); //Current site url
-		
+
 		//parse each url
 		$customize_site_url = parse_url( $customize_url );
 		$current_site_url 	= parse_url( $current_site_url );
@@ -408,7 +408,7 @@ class domain_map {
 		//Get the host from each url to allow across the iframe
 		$customize_site_url = $customize_site_url['host'];
 		$current_site_url 	= $current_site_url['host'];
-		
+
 		//If the customizer domain and iframe domain are not the same, we add the 2 domains.
 		//Firefox will not load if we ad the same domains
 		if ( $customize_site_url != $current_site_url ) {
@@ -452,7 +452,7 @@ class domain_map {
 			}
 		}
 	}
-	
+
 	/**
 	 * WHMCS Admin warning notice
 	 *
@@ -464,7 +464,7 @@ class domain_map {
 			'tab'  		=> 'reseller-options',
 			'dismiss'  	=> 'true',
 		), network_admin_url( 'settings.php', 'http' ) );
-		
+
 		$message      = sprintf( __( 'WHMCS is no longer supported in %s . Please check and update your <a href="%s">Reseller options</a>', 'domainmap' ), 'Domain Mapping' , $settings_url );
 		$html_message = sprintf( '<div class="notice notice-warning">%s</div>', wpautop( $message ) );
 

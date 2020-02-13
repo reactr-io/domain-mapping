@@ -56,4 +56,4 @@ class Domainmap_Punycode {
         $cls = new Punycode();
         return $cls->encode( $domain );
     }
-} 
+}

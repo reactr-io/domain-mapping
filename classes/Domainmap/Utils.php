@@ -105,7 +105,13 @@ class Domainmap_Utils{
      * @since 4.4.2.1
      */
     private function _set_mapped_domains(){
+    	$found = FALSE;
+    	$results = wp_cache_get('all', 'mapped_domains', FALSE, $found);
+    	if ($found === FALSE) {
         $results = $this->_wpdb->get_results( "SELECT blog_id, domain, is_primary  FROM " . DOMAINMAP_TABLE_MAP );
+		    wp_cache_set('all', $results, 'mapped_domains');
+	    }
+
         foreach( $results as $result ){
             self::$_mapped_domains[ $result->blog_id ][] = $result->domain;
             if( $result->is_primary  )
@@ -256,7 +262,7 @@ class Domainmap_Utils{
 				$force_ssl_on_mapped_domain = (bool) $force_ssl_on_mapped_domain;
 			}
 		}
-	
+
         return apply_filters("dm_force_ssl_on_mapped_domain", $force_ssl_on_mapped_domain) ;
     }
 
@@ -410,14 +416,21 @@ class Domainmap_Utils{
      * @return null|string
      */
     public function _fetch_mapped_domain( $blog_id ) {
-        $errors = $this->_wpdb->suppress_errors();
+    	$found      = FALSE;
+    	$cache_key  = domain_map::allow_multiple() ? "{$blog_id}_multiple_allowed" : $blog_id;
+		$domain     = wp_cache_get($cache_key, 'mapped_domains', FALSE, $found);
+		if ($found === FALSE) {
+	        $errors = $this->_wpdb->suppress_errors();
 
-        $sql    = domain_map::allow_multiple()
-            ? sprintf( "SELECT domain, is_primary FROM %s WHERE blog_id = %d ORDER BY is_primary DESC, id ASC LIMIT 1", DOMAINMAP_TABLE_MAP, $blog_id )
-            : sprintf( "SELECT domain, is_primary FROM %s WHERE blog_id = %d ORDER BY id ASC LIMIT 1", DOMAINMAP_TABLE_MAP, $blog_id );
-        $domain = $this->_wpdb->get_row( $sql, OBJECT );
+	        $sql    = domain_map::allow_multiple()
+	            ? sprintf( "SELECT domain, is_primary FROM %s WHERE blog_id = %d ORDER BY is_primary DESC, id ASC LIMIT 1", DOMAINMAP_TABLE_MAP, $blog_id )
+	            : sprintf( "SELECT domain, is_primary FROM %s WHERE blog_id = %d ORDER BY id ASC LIMIT 1", DOMAINMAP_TABLE_MAP, $blog_id );
+	        $domain = $this->_wpdb->get_row( $sql, OBJECT );
 
-        $this->_wpdb->suppress_errors( $errors );
+	        $this->_wpdb->suppress_errors( $errors );
+
+			wp_cache_set($cache_key, $domain, 'mapped_domains');
+		}
 
         return apply_filters("dm_fetch_mapped_domain", $domain, $blog_id);
     }

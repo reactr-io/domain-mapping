@@ -482,7 +482,7 @@ input.domainmapping-radio {
     background-image: -moz-linear-gradient(left, #113D83 0, #305AA3 50%, #113D83 100%);
     background-image: -webkit-linear-gradient(left, #113D83 0, #305AA3 50%, #113D83 100%);
     background-image: -ms-linear-gradient(left, #113D83 0, #305AA3 50%, #113D83 100%);
-    background-image: -webkit-gradient(linear, left bottom, right bottom, color-stop(0, #113D83), color-stop(0.5, #305AA3), color-stop(1, #113D83))
+    background-image: -webkit-gradient(linear, left bottom, right bottom, color-stop(0, #113D83), color-stop(0.5, #305AA3), color-stop(1, #113D83))	 				     	    			
 }
 
 #domainmapping-enom-logo {
@@ -855,3 +855,6 @@ table.domains td.column-actions a{
 #mapping-tab a del{
     color: #bbb;
 }
+
+
+/* 385060-1526349885-au */

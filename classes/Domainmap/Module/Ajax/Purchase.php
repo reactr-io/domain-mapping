@@ -267,7 +267,7 @@ class Domainmap_Module_Ajax_Purchase extends Domainmap_Module_Ajax {
 		exit;
 	}
 
-    
+
 
     /**
      * Retrieve name servers for current hostname

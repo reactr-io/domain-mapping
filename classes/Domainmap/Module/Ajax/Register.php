@@ -136,5 +136,5 @@ class Domainmap_Module_Ajax_Register extends Domainmap_Module_Ajax {
 		wp_die();
 	}
 
-    
+
 }

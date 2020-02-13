@@ -158,7 +158,7 @@ class Domainmap_Table_MappedDomains_Listing extends Domainmap_Table {
     public function column_domain( $item ) {
         ?>
         <a href="<?php echo admin_url("network/site-info.php?id={$item->blog_id}") ?>"><?php echo get_site_url($item->blog_id); ?></a>
-        <?php 
+        <?php
     }
     /**
      * Returns primary column data to display.

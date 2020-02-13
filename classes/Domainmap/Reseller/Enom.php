@@ -868,7 +868,7 @@ class Domainmap_Reseller_Enom extends Domainmap_Reseller {
 			'UseCreditCard' => 'no',
 			'EndUserIP'     => $_SERVER['REMOTE_ADDR']
 		);
-		
+
 		//Check if domain is a UK tld
 		preg_match( "`(?<=\.)\w+$`", strtolower($tld), $tld_array );
 		//If its UK, we need to add the required parameters

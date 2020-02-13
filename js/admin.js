@@ -333,7 +333,9 @@
                     $link.toggle("highlight");
 
                 }
-
+                else {
+                    show_error("We're sorry but SSL cannot be enabled until your DNS has been updated for your domain");
+                }
             }
         })
     });

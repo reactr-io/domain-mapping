@@ -414,12 +414,25 @@ class Domainmap_Module_Ajax_Map extends Domainmap_Module_Ajax {
 
      $current_scheme = (int) $this->_wpdb->get_var( $this->_wpdb->prepare( "SELECT `scheme` FROM " . DOMAINMAP_TABLE_MAP .  " WHERE `domain` = %s", $domain ) );
      if( !is_null( $current_scheme ) ){
-	    $new_schema = ( $current_scheme + 1 ) % 3;
-       $result = $this->_wpdb->update( DOMAINMAP_TABLE_MAP, array(
-           "scheme" => $new_schema ,
-       ), array(
-           "domain" => $domain
-       )  );
+        $new_schema = ( $current_scheme + 1 ) % 3;
+
+        // Check that the domain has updated DNS records
+		$health_link = site_url('/imagely.txt');
+
+		$res = wp_remote_get($health_link, array(
+			'redirection' => 2
+		));
+
+		// If not an error (due to missing SSL), and response code is 200
+		if (!($res instanceof WP_Error || ( isset($res['code']) && $res['code'] != 200))) {
+			$result = $this->_wpdb->update( DOMAINMAP_TABLE_MAP, array(
+				"scheme" => $new_schema ,
+			), array(
+				"domain" => $domain
+			)  );
+
+			do_action('domainmapping_scheme_changed', $domain, $new_schema);
+		}
      }
 
      if( $result ){

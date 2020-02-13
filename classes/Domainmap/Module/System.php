@@ -181,7 +181,7 @@ class Domainmap_Module_System extends Domainmap_Module {
 	 * @return boolean.
 	 */
 	public function table_exists( $table_name, $prefixed = false ) {
-		
+
 		$exists = false;
 
 		// Add the prefix if already not prefixed

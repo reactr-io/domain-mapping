@@ -245,9 +245,9 @@ class Domainmap_Render_Site_Map extends Domainmap_Render_Site {
 				// Change wording depending upon permissions to force SSL on pages.
 				$allow_forced_pages = Domainmap_Plugin::instance()->get_option("map_allow_forced_pages", true);
 				if (!empty($allow_forced_pages)) {
-					_e('Pages selected here will not be mapped and can optionally force https, If you set the domain to use https, the following "force/unforce SSL will be ignored" ', domain_map::Text_Domain); 
+					_e('Pages selected here will not be mapped and can optionally force https, If you set the domain to use https, the following "force/unforce SSL will be ignored" ', domain_map::Text_Domain);
 				} else {
-					_e('Pages selected here will not be mapped.', domain_map::Text_Domain); 
+					_e('Pages selected here will not be mapped.', domain_map::Text_Domain);
 				}
 				?>
 			</span>
@@ -347,11 +347,17 @@ class Domainmap_Render_Site_Map extends Domainmap_Render_Site {
 				<h4><?php _e("Map new domain name:", domain_map::Text_Domain); ?></h4>
 				<?php wp_nonce_field( Domainmap_Plugin::ACTION_MAP_DOMAIN, 'nonce' ) ?>
 				<input type="hidden" name="action" value="<?php echo Domainmap_Plugin::ACTION_MAP_DOMAIN ?>">
+				<input type="hidden" name="scheme" value="1" />
+				<input type="text" class="class="domainmapping-input-prefix" value="https://" style="width: 71px;" readonly disabled>
+<?php
+/*
 				<select type="text" name="scheme" class="domainmapping-input-prefix">
 					<option value="0">http://</option>
-					<option value="1">https://</option>
+					<option value="1" selected>https://</option>
 					<option value="2"><?php _e("Force none", domain_map::Text_Domain); ?></option>
 				</select>
+*/
+?>
 				<div class="domainmapping-controls-wrapper">
 					<input type="text" class="domainmapping-input-domain" autofocus name="domain">
 				</div>
@@ -364,4 +370,3 @@ class Domainmap_Render_Site_Map extends Domainmap_Render_Site {
 	<?php
 	}
 }
-

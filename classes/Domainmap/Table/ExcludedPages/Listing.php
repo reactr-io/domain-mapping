@@ -292,4 +292,3 @@ class Domainmap_Table_ExcludedPages_Listing extends Domainmap_Table {
 
 }
 
-
